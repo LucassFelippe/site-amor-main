@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Você me ama? ❤️</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=Caveat:wght@500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--pink:#ff4f93;--pink2:#ff1f7c;--dark:#5c1f3f;--muted:#a3315f;--glass:rgba(255,255,255,.62)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Poppins,sans-serif;color:var(--dark);background:radial-gradient(circle at 20% 20%,#ffd6e8 0,transparent 45%),radial-gradient(circle at 80% 30%,#ffc1dd 0,transparent 50%),linear-gradient(160deg,#ffe1ee,#ffb8d6 45%,#ff8fc0);background-size:200% 200%;animation:bg 14s ease infinite;overflow-x:hidden}
+@keyframes bg{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
+button{font:inherit;border:0;cursor:pointer}
+#heartField{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+#heartField span{position:absolute;bottom:-10%;animation:float linear infinite;opacity:0}
+@keyframes float{10%,90%{opacity:1}100%{transform:translateY(-115vh) translateX(var(--drift)) rotate(360deg);opacity:0}}
+.scene{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;position:relative;z-index:1}
+.card,.glass{background:var(--glass);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.75);box-shadow:0 30px 60px -20px rgba(150,30,80,.35)}
+.card{max-width:430px;width:100%;border-radius:32px;padding:48px 40px 56px;text-align:center}
+.foto-moldura{width:150px;height:150px;border-radius:50%;margin:0 auto 22px;border:5px solid #fff;overflow:hidden;box-shadow:0 12px 30px -8px rgba(200,20,90,.5)}
+.foto-moldura img{width:100%;height:100%;object-fit:cover}
+h1{font:600 italic clamp(30px,6vw,40px)/1.2 'Cormorant Garamond',serif;color:#7a1743}
+.subtitulo{font-size:14px;color:var(--muted);margin:8px 0 30px}
+.botoes{display:flex;gap:18px;justify-content:center;align-items:center;min-height:56px}
+#btn-sim{background:linear-gradient(135deg,var(--pink),var(--pink2));color:#fff;padding:14px 32px;border-radius:999px;box-shadow:0 10px 25px -6px rgba(255,20,110,.6);transition:.25s}
+#btn-sim:hover{transform:translateY(-2px) scale(1.04)}
+#btn-nao{background:#fff;color:#c23570;padding:14px 28px;border-radius:999px;border:1.5px solid #ffb6d5;position:relative;transition:.2s}
+.contador{margin-top:18px;font-size:12.5px;color:var(--muted);opacity:.75;font-style:italic;min-height:16px}
+#cena-resposta{display:none;min-height:100vh;position:relative;z-index:1;padding:70px 20px}
+#cena-resposta.ativa{display:block}
+.hero{text-align:center;max-width:900px;margin:0 auto 40px}
+.hero h2{font:600 italic clamp(38px,8vw,72px)/1 'Cormorant Garamond',serif;color:#7a1743}
+.hero p{margin-top:12px;color:var(--muted)}
+.nav{position:sticky;top:12px;z-index:20;max-width:900px;margin:0 auto 45px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.nav a{color:#7a1743;text-decoration:none;background:rgba(255,255,255,.62);padding:10px 16px;border-radius:999px;font-size:13px;box-shadow:0 8px 20px -12px #8a3156}
+.secao-extra{max-width:900px;margin:0 auto 42px;padding:30px;border-radius:26px}
+.secao-extra h2{text-align:center;font:600 italic 42px 'Cormorant Garamond',serif;color:#7a1743;margin-bottom:28px}
+.timeline{position:relative;max-width:760px;margin:auto}
+.timeline:before{content:"";position:absolute;left:50%;top:0;bottom:0;width:3px;background:rgba(255,255,255,.8);transform:translateX(-50%)}
+.timeline-item{position:relative;width:50%;padding:0 35px 42px}
+.timeline-item:nth-child(odd){left:0;text-align:right}
+.timeline-item:nth-child(even){left:50%;text-align:left}
+.timeline-item:after{content:"";position:absolute;top:10px;width:16px;height:16px;border-radius:50%;background:var(--pink);border:4px solid #fff;box-shadow:0 0 0 4px rgba(255,79,147,.2)}
+.timeline-item:nth-child(odd):after{right:-8px}.timeline-item:nth-child(even):after{left:-8px}
+.timeline-data{font-weight:600;color:#a3315f;font-size:14px}
+.timeline-foto{margin-top:8px;border-radius:18px;overflow:hidden;box-shadow:0 15px 30px -15px #7c3052}
+.timeline-foto img{width:100%;display:block;aspect-ratio:4/3;object-fit:cover}
+.timeline-texto{font-family:Caveat,cursive;font-size:24px;margin-top:8px}
+.mural-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.mural-grid figure{aspect-ratio:1;border-radius:16px;overflow:hidden;cursor:pointer;box-shadow:0 10px 20px -12px #7c3052;transition:.25s}
+.mural-grid figure:hover{transform:scale(1.035)}
+.mural-grid img{width:100%;height:100%;object-fit:cover}
+.lightbox{display:none;position:fixed;inset:0;background:rgba(30,0,15,.9);z-index:100;align-items:center;justify-content:center;padding:30px}
+.lightbox.aberta{display:flex}
+.lightbox img{max-width:95vw;max-height:90vh;border-radius:14px;object-fit:contain}
+.lightbox button{position:absolute;top:15px;right:20px;background:transparent;color:#fff;font-size:42px}
+.form-recado{display:flex;flex-direction:column;gap:12px;max-width:640px;margin:0 auto 24px}
+.form-recado input,.form-recado textarea{font:14px Poppins;padding:13px 15px;border:1px solid rgba(200,80,130,.35);border-radius:12px;background:rgba(255,255,255,.85);color:var(--dark);outline:none}
+.form-recado textarea{min-height:90px;resize:vertical}
+.form-recado button{align-self:center;background:linear-gradient(135deg,#ff9ec7,#ff5fa2);color:#fff;padding:12px 30px;border-radius:999px;box-shadow:0 10px 24px -8px rgba(200,20,90,.5)}
+.lista-recados{display:flex;flex-direction:column;gap:14px;max-width:640px;margin:auto}
+.recado{background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.75);border-radius:16px;padding:14px 18px;box-shadow:0 10px 22px -12px rgba(150,30,80,.25)}
+.recado-topo{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.recado-nome{font:20px Caveat,cursive;color:#a3315f}.recado-data{font-size:11px;color:#a3315f;opacity:.7}.recado-texto{font-size:14px;line-height:1.5;white-space:pre-wrap;margin-top:4px}
+.recado-vazio{text-align:center;font-size:14px;color:#a3315f;opacity:.75}
+.envelope-wrap{text-align:center;margin:0 auto 60px}
+.envelope{display:inline-block;padding:18px 30px;border-radius:999px;background:linear-gradient(135deg,#ff4f93,#ff1f7c);color:#fff;box-shadow:0 12px 25px -10px #a62a5e}
+#mensagemFinal{display:none;max-width:700px;margin:25px auto 0;font:28px/1.4 Caveat,cursive;color:#7a1743;text-align:center}
+#mensagemFinal.mostrar{display:block}
+@media(max-width:650px){.card{padding:35px 22px 42px}.timeline:before{left:12px}.timeline-item,.timeline-item:nth-child(even){left:0;width:100%;text-align:left;padding-left:42px;padding-right:0}.timeline-item:after,.timeline-item:nth-child(odd):after,.timeline-item:nth-child(even):after{left:4px;right:auto}.secao-extra{padding:22px 16px}.nav{top:8px}.mural-grid{grid-template-columns:repeat(3,1fr);gap:7px}}
+</style>
+</head>
+<body>
+<div id="heartField"></div>
+
+<section class="scene" id="cena-pergunta">
+  <div class="card">
+    <div class="foto-moldura">
+      <img src="assets/20-03_Te_vi_cantando_pela_primeira_vez.jpeg" alt="Nós dois">
+    </div>
+    <h1>Você me ama?</h1>
+    <p class="subtitulo">Responda com sinceridade... 💕</p>
+    <div class="botoes">
+      <button id="btn-sim">Sim ❤️</button>
+      <button id="btn-nao">Não</button>
+    </div>
+    <div class="contador" id="contadorFugas"></div>
+    <div class="contador" id="contadorDias"></div>
+  </div>
+</section>
+
+<section id="cena-resposta">
+  <nav class="nav">
+    <a href="#linha-do-tempo">Nossa história</a>
+    <a href="#mural-de-fotos">Fotos</a>
+    <a href="#mural-de-recados">Recados</a>
+  </nav>
+  <div class="hero">
+    <h2>Eu sabia! ❤️</h2>
+    <p>Um pedacinho da nossa história, guardado aqui.</p>
+  </div>
+
+  <div class="envelope-wrap">
+    <button class="envelope" id="abrirEnvelope">💌 Abrir minha mensagem</button>
+    <div id="mensagemFinal">Cada momento ao seu lado é especial. Obrigado por fazer parte da minha vida. Eu te amo! ❤️</div>
+  </div>
+
+  <section class="secao-extra glass" id="linha-do-tempo">
+    <h2>Nossa linha do tempo</h2>
+    <div class="timeline">
+      <article class="timeline-item"><div class="timeline-data">20 de março</div><div class="timeline-foto"><img src="assets/20-03_Te_vi_cantando_pela_primeira_vez.jpeg" alt="Te vi cantando pela primeira vez"></div><div class="timeline-texto">Te vi cantando pela primeira vez 🎤</div></article>
+      <article class="timeline-item"><div class="timeline-data">12 de abril</div><div class="timeline-foto"><img src="assets/12-04_Foto_no_girassol.jpeg" alt="Foto no girassol"></div><div class="timeline-texto">Nosso momento no campo de girassóis 🌻</div></article>
+      <article class="timeline-item"><div class="timeline-data">23 de abril</div><div class="timeline-foto"><img src="assets/23-04_Primeiro_rodeios_juntos.jpeg" alt="Primeiro rodeio juntos"></div><div class="timeline-texto">Nosso primeiro rodeio juntos 🤠</div></article>
+      <article class="timeline-item"><div class="timeline-data">16 de julho</div><div class="timeline-foto"><img src="assets/WhatsApp_Image_2026-07-16_at_20_36_42.jpeg" alt="Momento especial"></div><div class="timeline-texto">Mais um momento especial ao seu lado 💕</div></article>
+      <article class="timeline-item"><div class="timeline-data">17 de julho</div><div class="timeline-foto"><img src="assets/WhatsApp_Image_2026-07-17_at_19_22_23.jpeg" alt="Comemorando juntos"></div><div class="timeline-texto">Comemorando junto com a família 👶✨</div></article>
+    </div>
+  </section>
+
+  <section class="secao-extra glass" id="mural-de-fotos">
+    <h2>Nosso mural de fotos 📸</h2>
+    <div class="mural-grid" id="muralFotos"></div>
+  </section>
+
+  <section class="secao-extra glass" id="mural-de-recados">
+    <h2>Mural de recados 💌</h2>
+    <form class="form-recado" id="formRecado">
+      <input type="text" id="recadoNome" placeholder="Seu nome" maxlength="40" required>
+      <textarea id="recadoTexto" placeholder="Deixe um recado pra gente..." maxlength="500" required></textarea>
+      <button type="submit">Enviar recado 💗</button>
+    </form>
+    <div class="lista-recados" id="listaRecados"></div>
+  </section>
+</section>
+
+<div class="lightbox" id="lightbox"><button id="lightboxFechar" aria-label="Fechar">&times;</button><img id="lightboxImg" alt="Foto ampliada"></div>
+
+<audio id="gritoAudio" preload="auto"><source src="grito.mp3" type="audio/mpeg"></audio>
+<audio id="musicaFundo" loop preload="auto"><source src="musica.mp3" type="audio/mpeg"></audio>
+
+<script>
+const fotos=[
+"23-04_Primeiro_rodeios_juntos.jpeg","12-04_Foto_no_girassol.jpeg","20-03_Te_vi_cantando_pela_primeira_vez.jpeg",
+"WhatsApp_Image_2026-07-16_at_20_36_42.jpeg","WhatsApp_Image_2026-07-16_at_20_36_42__1_.jpeg",
+"WhatsApp_Image_2026-07-17_at_19_22_22.jpeg","WhatsApp_Image_2026-07-17_at_19_22_22__1_.jpeg",
+"WhatsApp_Image_2026-07-17_at_19_22_23.jpeg","WhatsApp_Image_2026-07-17_at_19_22_23__1_.jpeg",
+"WhatsApp_Image_2026-07-17_at_19_22_23__2_.jpeg","WhatsApp_Image_2026-07-17_at_19_22_23__3_.jpeg",
+"WhatsApp_Image_2026-07-17_at_19_22_24.jpeg"
+];
+const mural=document.getElementById('muralFotos');
+fotos.forEach((foto,i)=>{const f=document.createElement('figure');const img=document.createElement('img');img.src='assets/'+foto;img.alt='Nossa foto '+(i+1);f.appendChild(img);mural.appendChild(f)});
+const lightbox=document.getElementById('lightbox'), lightboxImg=document.getElementById('lightboxImg');
+mural.addEventListener('click',e=>{const img=e.target.closest('img');if(!img)return;lightboxImg.src=img.src;lightbox.classList.add('aberta')});
+function fecharLightbox(){lightbox.classList.remove('aberta');lightboxImg.src=''}
+document.getElementById('lightboxFechar').onclick=fecharLightbox;
+lightbox.addEventListener('click',e=>{if(e.target===lightbox)fecharLightbox()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')fecharLightbox()});
+
+const btnNao=document.getElementById('btn-nao'),btnSim=document.getElementById('btn-sim'),contador=document.getElementById('contadorFugas'),grito=document.getElementById('gritoAudio');
+let fugas=0,lastScream=0;
+function gritarNao(){
+  const now=Date.now(); if(now-lastScream<350)return; lastScream=now;
+  grito.pause();grito.currentTime=0;grito.play().catch(()=>{});
+}
+function fugirDoMouse(e){
+  gritarNao();fugas++;
+  const frases=["Não","Tem certeza?","Pensa bem...","Sério mesmo?","Última chance!","Você hein...","Impossível clicar 😏","Desiste, tenta o Sim"];
+  btnNao.textContent=frases[Math.min(fugas,frases.length-1)];
+  btnSim.style.transform=`scale(${Math.min(1+fugas*.06,1.6)})`;
+  const w=btnNao.offsetWidth||90,h=btnNao.offsetHeight||44,m=16;
+  const mx=e?.clientX??innerWidth/2,my=e?.clientY??innerHeight/2;
+  let x,y,d,t=0;do{x=m+Math.random()*Math.max(innerWidth-w-2*m,10);y=m+Math.random()*Math.max(innerHeight-h-2*m,10);d=Math.hypot(x-mx,y-my);t++}while(d<Math.min(innerWidth,innerHeight)*.35&&t<12);
+  btnNao.style.position='fixed';btnNao.style.left=x+'px';btnNao.style.top=y+'px';btnNao.style.zIndex=50;
+  contador.textContent=fugas===1?"ele já foge uma vez...":`já são ${fugas} tentativas frustradas 😌`;
+}
+btnNao.addEventListener('pointerenter',fugirDoMouse);
+btnNao.addEventListener('pointerdown',e=>{gritarNao();if(e.pointerType==='touch')fugirDoMouse(e);});
+btnNao.addEventListener('click',e=>{e.preventDefault();gritarNao();fugirDoMouse(e)});
+
+btnSim.onclick=()=>{document.getElementById('cena-pergunta').style.display='none';document.getElementById('cena-resposta').classList.add('ativa');scrollTo({top:0,behavior:'instant'})};
+document.getElementById('abrirEnvelope').onclick=()=>{
+  document.getElementById('mensagemFinal').classList.add('mostrar');
+  const musica=document.getElementById('musicaFundo');musica.currentTime=0;musica.play().catch(()=>{});
+};
+const inicio=new Date(2025,11,5);
+function atualizarDias(){const dias=Math.max(Math.floor((Date.now()-inicio)/(1000*60*60*24)),0);document.getElementById('contadorDias').textContent=`juntos há ${dias.toLocaleString('pt-BR')} dias 💕`}
+atualizarDias();
+
+const campo=document.getElementById('heartField'),emojis=['💗','💕','💖','❤️'];
+for(let i=0;i<24;i++){const s=document.createElement('span');s.textContent=emojis[Math.floor(Math.random()*emojis.length)];s.style.left=Math.random()*100+'%';s.style.setProperty('--drift',(Math.random()*80-40)+'px');s.style.animationDuration=9+Math.random()*10+'s';s.style.animationDelay=Math.random()*10+'s';s.style.fontSize=14+Math.random()*18+'px';campo.appendChild(s)}
+
+const CHAVE='siteAmorRecados';
+function carregarRecados(){try{return JSON.parse(localStorage.getItem(CHAVE))||[]}catch{return[]}}
+function escapar(txt){const d=document.createElement('div');d.textContent=txt;return d.innerHTML}
+function renderizarRecados(){
+  const lista=document.getElementById('listaRecados'),recados=carregarRecados();lista.innerHTML='';
+  if(!recados.length){lista.innerHTML='<div class="recado-vazio">Ainda não há recados por aqui... seja a primeira pessoa a deixar um 💗</div>';return}
+  recados.slice().reverse().forEach(r=>{const div=document.createElement('div');div.className='recado';div.innerHTML=`<div class="recado-topo"><span class="recado-nome">${escapar(r.nome)}</span><span class="recado-data">${r.data}</span></div><div class="recado-texto">${escapar(r.texto)}</div>`;lista.appendChild(div)})
+}
+document.getElementById('formRecado').addEventListener('submit',e=>{
+  e.preventDefault();const nome=document.getElementById('recadoNome'),texto=document.getElementById('recadoTexto');
+  const n=nome.value.trim(),t=texto.value.trim();if(!n||!t)return;
+  const recados=carregarRecados();recados.push({nome:n,texto:t,data:new Date().toLocaleString('pt-BR')});localStorage.setItem(CHAVE,JSON.stringify(recados));nome.value='';texto.value='';renderizarRecados()
+});
+renderizarRecados();
+</script>
+</body>
+</html>
